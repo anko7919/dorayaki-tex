@@ -1,0 +1,33 @@
+\ProvidesPackage{dorayaki-font}[2026/05/02 Font setup]
+
+\RequirePackage{fontspec}
+\RequirePackage{luatexja-fontspec}
+\RequirePackage{amsmath}
+\RequirePackage{unicode-math}
+
+\newif\ifposter
+\posterfalse
+
+\DeclareOption{poster}{\postertrue}
+\DeclareOption{serif}{\posterfalse}
+
+\DeclareOption*{%
+  \PassOptionsToPackage{\CurrentOption}{fontspec}%
+  \PassOptionsToPackage{\CurrentOption}{unicode-math}%
+}
+
+\ProcessOptions\relax
+
+% ------ フォント設定 ------
+\ifposter
+  % Poster (sans)
+  \setmainfont{Noto Sans}
+  \setmathfont{STIX Two Math}
+  \setmainjfont{Noto Sans CJK JP}
+\else
+  % Serif 
+  \setmainfont{TeX Gyre Termes}
+  \setmathfont{STIX Two Math}
+  \setmainjfont{Noto Serif CJK JP}
+\fi
+
