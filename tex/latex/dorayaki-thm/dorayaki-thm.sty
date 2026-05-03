@@ -1,0 +1,51 @@
+% 定理・証明環境関係
+\ProvidesPackage{dorayaki-thm}[2026/05/03 dorayaki-thm]
+
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+\RequirePackage{amsthm}
+
+% ------- Options -------
+\SetupKeyvalOptions{
+  family=dorayaki,
+  prefix=dorayaki@
+}
+
+\DeclareStringOption[plain]{theoremstyle}
+\DeclareStringOption{language}
+
+\ProcessKeyvalOptions*
+
+% ------- Main -------
+% 言語別見出し定義
+\newcommand{\thm@english}{Theorem}
+\newcommand{\lem@english}{Lemma}
+\newcommand{\cor@english}{Corollary}
+\newcommand{\prop@english}{Proposition}
+\newcommand{\dfn@english}{Definition}
+\newcommand{\thm@japanese}{定理}
+\newcommand{\lem@japanese}{補題}
+\newcommand{\cor@japanese}{系}
+\newcommand{\prop@japanese}{命題}
+\newcommand{\dfn@japanese}{定義}
+
+% 言語と種類に対しコマンドを割り当てる
+\newcommand{\theorem@type@lang}[2]{%
+  \@ifundefined{#1@#2}{%
+    \PackageError{dorayaki-math}{unknown language: #2}{}
+  }{%
+    \csname #1@#2\endcsname
+  }%
+}
+
+\theoremstyle{\dorayaki@theoremstyle}
+\newtheorem{thm}{\theorem@type@lang{thm}{\dorayaki@language}}
+\newtheorem{lem}[thm]{\theorem@type@lang{lem}{\dorayaki@language}}
+\newtheorem{cor}[thm]{\theorem@type@lang{cor}{\dorayaki@language}}
+\newtheorem{prop}[thm]{\theorem@type@lang{prop}{\dorayaki@language}}
+\newtheorem*{thm*}{\theorem@type@lang{thm}{\dorayaki@language}}
+\newtheorem*{lem*}{\theorem@type@lang{lem}{\dorayaki@language}}
+\newtheorem*{cor*}{\theorem@type@lang{cor}{\dorayaki@language}}
+\newtheorem*{prop*}{\theorem@type@lang{prop}{\dorayaki@language}}
+\newtheorem*{dfn*}{\theorem@type@lang{dfn}{\dorayaki@language}}
+

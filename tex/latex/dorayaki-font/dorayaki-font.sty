@@ -1,3 +1,4 @@
+% フォントの設定関係
 \ProvidesPackage{dorayaki-font}[2026/05/02 Font setup]
 
 \RequirePackage{fontspec}
@@ -9,7 +10,7 @@
 \posterfalse
 
 \DeclareOption{poster}{\postertrue}
-\DeclareOption{serif}{\posterfalse}
+\DeclareOption{paper}{\posterfalse}
 
 \DeclareOption*{%
   \PassOptionsToPackage{\CurrentOption}{fontspec}%
@@ -25,7 +26,7 @@
   \setmathfont{STIX Two Math}
   \setmainjfont{Noto Sans CJK JP}
 \else
-  % Serif 
+  % Paper (serif)
   \setmainfont{TeX Gyre Termes}
   \setmathfont{STIX Two Math}
   \setmainjfont{Noto Serif CJK JP}
