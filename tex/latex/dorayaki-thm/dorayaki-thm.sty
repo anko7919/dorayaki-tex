@@ -5,18 +5,18 @@
 \RequirePackage{etoolbox}
 \RequirePackage{amsthm}
 
-% ------- Options -------
+% ======= Options =======
 \SetupKeyvalOptions{
   family=dorayaki,
   prefix=dorayaki@
 }
 
-\DeclareStringOption[plain]{theoremstyle}
 \DeclareStringOption{language}
 
 \ProcessKeyvalOptions*
 
-% ------- Main -------
+% ======= Main =======
+% ----- 定理環境 -----
 % 言語別見出し定義
 \newcommand{\thm@english}{Theorem}
 \newcommand{\lem@english}{Lemma}
@@ -38,7 +38,47 @@
   }%
 }
 
-\theoremstyle{\dorayaki@theoremstyle}
+% 日本語
+\newtheoremstyle{japanese-thm}%
+    {3pt}% 上部スペース
+    {3pt}% 下部スペース
+    {\normalfont}% 本文フォント
+    {0pt}% 1行目のインデント量
+    {\bfseries}% 見出しフォント
+    {.}% 見出し後の句読点
+    { }% 見出し後のスペース
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
+\newtheoremstyle{japanese-dfn}%
+    {3pt}%
+    {3pt}%
+    {\normalfont}%
+    {0pt}%
+    {\bfseries}%
+    {.}%
+    { }%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
+
+% 英語
+\newtheoremstyle{english-thm}%
+    {3pt}%
+    {3pt}%
+    {\itshape}%
+    {0pt}%
+    {\bfseries}%
+    {.}%
+    { }%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
+\newtheoremstyle{english-dfn}%
+    {3pt}%
+    {3pt}%
+    {\normalfont}%
+    {0pt}%
+    {\bfseries}%
+    {.}%
+    { }%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
+
+\theoremstyle{\dorayaki@language-thm}
 \newtheorem{thm}{\theorem@type@lang{thm}{\dorayaki@language}}
 \newtheorem{lem}[thm]{\theorem@type@lang{lem}{\dorayaki@language}}
 \newtheorem{cor}[thm]{\theorem@type@lang{cor}{\dorayaki@language}}
@@ -47,5 +87,20 @@
 \newtheorem*{lem*}{\theorem@type@lang{lem}{\dorayaki@language}}
 \newtheorem*{cor*}{\theorem@type@lang{cor}{\dorayaki@language}}
 \newtheorem*{prop*}{\theorem@type@lang{prop}{\dorayaki@language}}
+\theoremstyle{\dorayaki@language-dfn}
 \newtheorem*{dfn*}{\theorem@type@lang{dfn}{\dorayaki@language}}
+
+% ----- 証明環境 -----
+\ifdefstring{\dorayaki@language}{japanese}{%
+  \renewenvironment{proof}[1][\proofname]{\par
+    \pushQED{\qed}%
+    \normalfont \topsep6\p@\@plus6\p@\relax
+    \trivlist
+    \item\relax
+    {\bfseries
+    #1\@addpunct{. }}\hspace\labelsep\ignorespaces
+  }{%
+    \popQED\endtrivlist\@endpefalse
+  }
+}{}
 
