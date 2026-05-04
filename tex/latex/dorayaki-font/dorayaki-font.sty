@@ -1,9 +1,9 @@
 % フォントの設定関係
-\ProvidesPackage{dorayaki-font}[2026/05/02 Font setup]
+\ProvidesPackage{dorayaki-font}[2026/05/02 dorayaki-font]
 
 \RequirePackage{fontspec}
 \RequirePackage{luatexja-fontspec}
-\RequirePackage{amsmath}
+\RequirePackage{mathtools}
 \RequirePackage{unicode-math}
 
 \newif\ifposter
@@ -23,12 +23,14 @@
 \ifposter
   % Poster (sans)
   \setmainfont{Noto Sans}
-  \setmathfont{STIX Two Math}
+  \setmathfont{Libertinus Math}
   \setmainjfont{Noto Sans CJK JP}
 \else
   % Paper (serif)
-  \setmainfont{TeX Gyre Termes}
-  \setmathfont{STIX Two Math}
+  \setmainfont{Libertinus Serif}
+  \setsansfont{Libertinus Sans}
+  \setsansfont{Libertinus Mono}
+  \setmathfont{Libertinus Math}
   \setmainjfont{Noto Serif CJK JP}
 \fi
 

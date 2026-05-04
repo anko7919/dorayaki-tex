@@ -1,11 +1,12 @@
 % 数学系マクロ関係
-\ProvidesPackage{dorayaki-math}[2026/05/02 Math]
+\ProvidesPackage{dorayaki-math}[2026/05/02 dorayaki-math]
 
-\RequirePackage{amsthm}
 \RequirePackage{mathtools}
 \RequirePackage{unicode-math}
 
 % ----------- Main -----------
+
+\mathtoolsset{showonlyrefs=true}
 
 % Operators
 \DeclareMathOperator{\Spec}{Spec}
@@ -19,13 +20,15 @@
 \DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
 \DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
 \DeclarePairedDelimiter{\set}{\lbrace}{\rbrace}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
 \DeclarePairedDelimiterX{\dlegendre}[2]{\lparen}{\rparen}{\dfrac{#1}{#2}}
 \DeclarePairedDelimiterX{\tlegendre}[2]{\lparen}{\rparen}{#1 / #2}
 
 % Sets
-\newcommand{\ZZ}{\symbb{Z}}
-\newcommand{\QQ}{\symbb{Q}}
-\newcommand{\RR}{\symbb{R}}
-\newcommand{\CC}{\symbb{C}}
-\newcommand{\FF}{\symbb{F}}
+\NewDocumentCommand{\ZZ}{}{\symbb{Z}}
+\NewDocumentCommand{\QQ}{}{\symbb{Q}}
+\NewDocumentCommand{\RR}{}{\symbb{R}}
+\NewDocumentCommand{\CC}{}{\symbb{C}}
+\NewDocumentCommand{\FF}{}{\symbb{F}}
 
