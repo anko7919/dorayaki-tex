@@ -1,36 +1,32 @@
-% フォントの設定関係
-\ProvidesPackage{dorayaki-font}[2026/05/02 dorayaki-font]
+\NeedsTeXFormat{LaTeX2e}[2025-06-01]
+\ProvidesPackage{dorayaki-font}[2026/05/02 The font package]
 
 \RequirePackage{fontspec}
 \RequirePackage{luatexja-fontspec}
-\RequirePackage{mathtools}
 \RequirePackage{unicode-math}
 
-\newif\ifposter
-\posterfalse
-
-\DeclareOption{poster}{\postertrue}
-\DeclareOption{paper}{\posterfalse}
-
-\DeclareOption*{%
-  \PassOptionsToPackage{\CurrentOption}{fontspec}%
-  \PassOptionsToPackage{\CurrentOption}{unicode-math}%
+\DeclareKeys[dorayaki-font]{%
+  sans.if = @dorayaki@sans,
+  serif.ifnot = @dorayaki@sans,
+  mathfontscale.store = \dorayaki@mathfontscale,
+  jafontscale.store = \dorayaki@jafontscale,
 }
 
-\ProcessOptions\relax
+\DeclareUnknownKeyHandler{%
+  \PassOptionsToPackage{\CurrentOption}{unicode-math}
+}
 
-% ------ フォント設定 ------
-\ifposter
-  % Poster (sans)
+\ProcessKeyOptions
+
+\if@dorayaki@sans
+  \setmathfont[Scale=\dorayaki@mathfontscale]{Libertinus Math}
   \setmainfont{Noto Sans}
-  \setmathfont{Libertinus Math}
-  \setmainjfont{Noto Sans CJK JP}
+  \setmainjfont[Scale=\dorayaki@jafontscale]{Noto Sans CJK JP}
 \else
-  % Paper (serif)
   \setmainfont{Libertinus Serif}
   \setsansfont{Libertinus Sans}
-  \setsansfont{Libertinus Mono}
-  \setmathfont{Libertinus Math}
-  \setmainjfont{Noto Serif CJK JP}
+  \setmonofont{Libertinus Mono}
+  \setmathfont[Scale=\dorayaki@mathfontscale]{Libertinus Math}
+  \setmainjfont[Scale=\dorayaki@jafontscale]{Noto Serif CJK JP}
 \fi
 
