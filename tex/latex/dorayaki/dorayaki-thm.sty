@@ -23,11 +23,13 @@
 \newcommand{\cor@english}{Corollary}
 \newcommand{\prop@english}{Proposition}
 \newcommand{\dfn@english}{Definition}
+\newcommand{\rem@english}{Remark}
 \newcommand{\thm@japanese}{定理}
 \newcommand{\lem@japanese}{補題}
 \newcommand{\cor@japanese}{系}
 \newcommand{\prop@japanese}{命題}
 \newcommand{\dfn@japanese}{定義}
+\newcommand{\rem@japanese}{注}
 
 % 言語と種類に対しコマンドを割り当てる
 \newcommand{\theorem@type@lang}[2]{%
@@ -89,6 +91,7 @@
 \newtheorem*{prop*}{\theorem@type@lang{prop}{\dorayaki@language}}
 \theoremstyle{\dorayaki@language-dfn}
 \newtheorem*{dfn*}{\theorem@type@lang{dfn}{\dorayaki@language}}
+\newtheorem*{rem*}{\theorem@type@lang{rem}{\dorayaki@language}}
 
 % ----- 証明環境 -----
 \ifdefstring{\dorayaki@language}{japanese}{%
@@ -97,7 +100,7 @@
     \normalfont \topsep6\p@\@plus6\p@\relax
     \trivlist
     \item\relax
-    {\bfseries
+    {%\bfseries
     #1\@addpunct{. }}\hspace\labelsep\ignorespaces
   }{%
     \popQED\endtrivlist\@endpefalse

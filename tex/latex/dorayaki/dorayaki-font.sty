@@ -1,0 +1,42 @@
+\NeedsTeXFormat{LaTeX2e}[2025-06-01]
+\ProvidesPackage{dorayaki-font}[2026/05/02 The font package]
+
+\DeclareKeys[dorayaki-font]{%
+  sans.if = @dorayaki@sans,
+  serif.ifnot = @dorayaki@sans,
+  jpn.if = @dorayaki@jpn,
+  mathfontscale.store = \dorayaki@mathfontscale,
+  jafontscale.store = \dorayaki@jafontscale,
+}
+
+\DeclareUnknownKeyHandler{%
+  \PassOptionsToPackage{\CurrentOption}{unicode-math}
+}
+
+\ProcessKeyOptions
+
+\if@dorayaki@jpn
+  \RequirePackage{luatexja-fontspec}
+\fi
+\RequirePackage{fontspec}
+\RequirePackage{unicode-math}
+
+\if@dorayaki@sans
+  \setmathfont[Scale=\dorayaki@mathfontscale]{STIX Two Math}
+  \setmainfont{Noto Sans}
+  \if@dorayaki@jpn
+    \setmainjfont[Scale=\dorayaki@jafontscale]{Noto Sans CJK JP}
+  \fi
+\else
+  \if@dorayaki@jpn
+    \setmainfont{Libertinus Serif}
+    \setmathfont[Scale=\dorayaki@mathfontscale]{Libertinus Math}
+    \setmainjfont[Scale=\dorayaki@jafontscale]{Noto Serif CJK JP}
+  \else 
+    \setmainfont{Libertinus Serif}
+    \setsansfont{Libertinus Sans}
+    \setmonofont{Libertinus Mono}
+    \setmathfont[Scale=\dorayaki@mathfontscale]{Libertinus Math}
+  \fi
+\fi
+
