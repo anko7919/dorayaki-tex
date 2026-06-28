@@ -3,34 +3,34 @@
 
 \ExplSyntaxOn
 
-\dim_new:N \l__dorayaki_fontsize_dim
 \fp_new:N \l__dorayaki_linespread_fp
-\dim_new:N \l__dorayaki_margin_dim
 
 \keys_define:nn { dorayaki }{%
-  fontsize .dim_set:N = \l__dorayaki_fontsize_dim,
+  fontsize .code:n = {
+    \ClassInfo{ dorayaki-article }{ fontsize: #1 }
+    \PassOptionsToClass{ fontsize=#1 }{ scrartcl }
+  },
   fontsize .initial:n = 11pt,
   linespread .fp_set:N = \l__dorayaki_linespread_fp,
   linespread .initial:n = 1.0,
-  margin .dim_set:N = \l__dorayaki_margin_dim,
-  margin .initial:n = 3.0cm
+  DIV .code:n = {
+    \ClassInfo{ dorayaki-article }{ DIV: #1 }
+    \PassOptionsToClass{ DIV=#1 }{ scrartcl }
+  },
+  DIV .initial:n = calc,
+  unknown .code:n = {
+    \ClassInfo{ dorayaki-article }{ \CurrentOption }
+    \PassOptionsToClass{ \CurrentOption }{ scrartcl }
+  }
 }
 
 \ProcessKeyOptions[ dorayaki ]
 
-\ClassInfo{dorayaki-article}{fontsize: \dim_use:N \l__dorayaki_fontsize_dim}
-\ClassInfo{dorayaki-article}{linespread: \fp_use:N \l__dorayaki_linespread_fp}
-\ClassInfo{dorayaki-article}{margin: \dim_use:N \l__dorayaki_margin_dim}
-
-\PassOptionsToPackage{margin=\l__dorayaki_margin_dim}{geometry}
+\ClassInfo{ dorayaki-article }{ linespread: \fp_use:N \l__dorayaki_linespread_fp }
 
 \AtBeginDocument{%
-  \fontsize{%
-    \l__dorayaki_fontsize_dim
-  }{%
-    \dim_eval:n { 1.3 \l__dorayaki_fontsize_dim }
-  }\selectfont
   \linespread{ \fp_use:N \l__dorayaki_linespread_fp }
+  \recalctypearea
 }
 
 \ExplSyntaxOff

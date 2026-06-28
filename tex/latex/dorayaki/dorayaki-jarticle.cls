@@ -14,6 +14,7 @@
     \PassOptionsToClass{jafontscale=#1}{jlreq}
     \PassOptionsToPackage{jafontscale=#1}{dorayaki-font}
   },
+  jafontscale .initial:n = 0.9247,
   unknown .code:n = {
     \ClassInfo{ dorayaki-jarticle }{ unknown-option: \CurrentOption }
     \PassOptionsToClass{ \CurrentOption }{ jlreq }
