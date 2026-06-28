@@ -13,7 +13,7 @@
   linespread .fp_set:N = \l__dorayaki_linespread_fp,
   linespread .initial:n = 1.0,
   margin .dim_set:N = \l__dorayaki_margin_dim,
-  margin .initial:n = 2.5cm
+  margin .initial:n = 3.0cm
 }
 
 \ProcessKeyOptions[ dorayaki ]
