@@ -6,18 +6,13 @@
 \fp_new:N \l__dorayaki_linespread_fp
 
 \keys_define:nn { dorayaki }{%
-  fontsize .code:n = {
-    \ClassInfo{ dorayaki-article }{ fontsize: #1 }
-    \PassOptionsToClass{ fontsize=#1 }{ scrartcl }
-  },
-  fontsize .initial:n = 11pt,
   linespread .fp_set:N = \l__dorayaki_linespread_fp,
   linespread .initial:n = 1.0,
+  DIV .initial:n = calc,
   DIV .code:n = {
     \ClassInfo{ dorayaki-article }{ DIV: #1 }
     \PassOptionsToClass{ DIV=#1 }{ scrartcl }
   },
-  DIV .initial:n = calc,
   unknown .code:n = {
     \ClassInfo{ dorayaki-article }{ \CurrentOption }
     \PassOptionsToClass{ \CurrentOption }{ scrartcl }
@@ -38,10 +33,9 @@
 \LoadClass{scrartcl}
 
 \RequirePackage{mathtools}
-\RequirePackage[default,varnothing]{fontsetup}
+\RequirePackage[varnothing]{fontsetup}
 \RequirePackage[serif]{dorayaki-font}
 \RequirePackage{dorayaki-math}
 \RequirePackage[language=english]{dorayaki-thm}
 \RequirePackage{microtype}
-\RequirePackage{geometry}
 

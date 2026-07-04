@@ -32,7 +32,7 @@
 \LoadClass{jlreq}
 
 \RequirePackage{mathtools}
-\RequirePackage[default,varnothing]{fontsetup}
+\RequirePackage[varnothing]{fontsetup}
 \RequirePackage[serif,jpn]{dorayaki-font}
 \RequirePackage{dorayaki-math}
 \RequirePackage[language=japanese]{dorayaki-thm}
