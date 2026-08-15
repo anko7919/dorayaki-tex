@@ -5,8 +5,6 @@
   sans.if = @dorayaki@sans,
   serif.ifnot = @dorayaki@sans,
   jpn.if = @dorayaki@jpn,
-  mathfontscale.store = \dorayaki@mathfontscale,
-  jafontscale.store = \dorayaki@jafontscale,
 }
 
 \DeclareUnknownKeyHandler{%
@@ -16,27 +14,33 @@
 \ProcessKeyOptions
 
 \if@dorayaki@jpn
+  \PackageInfo{ dorayaki-font }{ japanese }
   \RequirePackage{luatexja-fontspec}
+  \RequirePackage{luatexja-adjust}
 \fi
 \RequirePackage{fontspec}
 \RequirePackage{unicode-math}
 
 \if@dorayaki@sans
-  \setmathfont[Scale=\dorayaki@mathfontscale]{STIX Two Math}
+  \PackageInfo{ dorayaki-font }{ sans mode }
+  \setmathfont{STIX Two Math}
   \setmainfont{Noto Sans}
   \if@dorayaki@jpn
-    \setmainjfont[Scale=\dorayaki@jafontscale]{Noto Sans CJK JP}
+    \setmainjfont{Noto Sans CJK JP}
   \fi
 \else
+  \PackageInfo{ dorayaki-font }{ serif mode }
+  \setmainfont{Libertinus Serif}
+  \setsansfont{Libertinus Sans}
+  \setmonofont{Libertinus Mono}
+  \setmathfont{Libertinus Math}
   \if@dorayaki@jpn
-    \setmainfont{Libertinus Serif}
-    \setmathfont[Scale=\dorayaki@mathfontscale]{Libertinus Math}
-    \setmainjfont[Scale=\dorayaki@jafontscale]{Noto Serif CJK JP}
-  \else 
-    \setmainfont{Libertinus Serif}
-    \setsansfont{Libertinus Sans}
-    \setmonofont{Libertinus Mono}
-    \setmathfont[Scale=\dorayaki@mathfontscale]{Libertinus Math}
+    \setmainjfont{HaranoAjiMincho}
+    \setsansjfont{HaranoAjiGothic}
+    \setmathfont{Libertinus Math}
+    \setmainfont{STIX Two Text}
+    \setsansfont{STIX Two Text}
+    \setmonofont{STIX Two Text}
   \fi
 \fi
 

@@ -21,6 +21,8 @@
   },
 }
 
+\PassOptionsToClass{ hanging_punctuation }{ jlreq }
+
 \ProcessKeyOptions[ dorayaki ]
 
 \AtBeginDocument{%
@@ -36,4 +38,6 @@
 \RequirePackage[serif,jpn]{dorayaki-font}
 \RequirePackage{dorayaki-math}
 \RequirePackage[language=japanese]{dorayaki-thm}
+
+\RenewDocumentCommand{\emph}{ m }{\textbf{#1}}
 
