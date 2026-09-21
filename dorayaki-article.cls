@@ -39,3 +39,5 @@
 \RequirePackage[language=english]{dorayaki-thm}
 \RequirePackage{microtype}
 
+\frenchspacing
+
