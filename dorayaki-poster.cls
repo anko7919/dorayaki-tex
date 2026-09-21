@@ -3,8 +3,6 @@
 
 \ExplSyntaxOn
 
-% \debug_on:n{ all }
-
 \bool_new:N \l__dorayaki_subtitle_on_bool
 \tl_new:N \l__dorayaki_subtitle_tl
 \dim_new:N \l__dorayaki_fontsize_dim
@@ -29,6 +27,7 @@
   \tl_set:Nn \l__dorayaki_subtitle_tl { #1 }
 }
 
+% 公開する必要なさそう
 \NewDocumentCommand{\putsubtitle}{}{
   \bool_if:NT \l__dorayaki_subtitle_on_bool {
     \large \tl_use:N\l__dorayaki_subtitle_tl \par
@@ -45,6 +44,7 @@
                 { \fp_eval:n{ \dim_to_fp:n{ #2 } * #3 * \l__dorayaki_vert_space_rate_fp }pt
     }\selectfont }
 }
+% 公開する必要なさそう
 \NewDocumentCommand{\setfontsize}{}{
   \__dorayaki_set_fontsize:Nnn \tiny { \l__dorayaki_fontsize_dim }{ 0.4 }
   \__dorayaki_set_fontsize:Nnn \scriptsize { \l__dorayaki_fontsize_dim }{ 0.5 }
