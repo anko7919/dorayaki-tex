@@ -1,0 +1,204 @@
+\NeedsTeXFormat{LaTeX2e}[2025-06-01]
+\ProvidesPackage{dorayaki-lill}[2026/05/02]
+
+\RequirePackage{tikz}
+\usetikzlibrary{calc}
+
+\tikzset{
+  fold/.style={dashed,semithick},
+  axis/.style={->,thin},
+  line/.style={semithick},
+  support/.style={dotted,semithick}
+}
+
+\ExplSyntaxOn
+
+\fp_new:N \l__dorayaki_x_fp
+\fp_new:N \l__dorayaki_y_fp
+\fp_new:N \l__dorayaki_max_x_fp
+\fp_new:N \l__dorayaki_min_x_fp
+\fp_new:N \l__dorayaki_max_y_fp
+\fp_new:N \l__dorayaki_min_y_fp
+\fp_new:N \l__dorayaki_axis_max_x_fp
+\fp_new:N \l__dorayaki_axis_min_x_fp
+\fp_new:N \l__dorayaki_axis_max_y_fp
+\fp_new:N \l__dorayaki_axis_min_y_fp
+\fp_new:N \l__dorayaki_la_x_fp
+\fp_new:N \l__dorayaki_lb_y_fp
+\fp_new:N \l__dorayaki_fold_x_left_fp
+\fp_new:N \l__dorayaki_fold_x_right_fp
+\int_new:N \l__dorayaki_dx_int
+\int_new:N \l__dorayaki_dy_int
+\int_new:N \l__dorayaki_lb_abovebelow_int
+
+% 使用する各変数を初期化する
+\cs_new:Nn \__dorayaki_lill_init: {%
+  \fp_set:Nn \l__dorayaki_x_fp { 0.0 }
+  \fp_set:Nn \l__dorayaki_y_fp { 0.0 }
+  \fp_set:Nn \l__dorayaki_max_x_fp { 0.0 }
+  \fp_set:Nn \l__dorayaki_max_y_fp { 0.0 }
+  \fp_set:Nn \l__dorayaki_min_x_fp { 0.0 }
+  \fp_set:Nn \l__dorayaki_min_y_fp { 0.0 }
+  \int_set:Nn \l__dorayaki_dx_int { 0 }
+  \int_set:Nn \l__dorayaki_dy_int { -1 }
+}
+
+% 現在の座標から点すべてのx, y座標の最大最小を更新する
+\cs_new:Nn \__dorayaki_lill_update_minmax: {%
+  \fp_compare:nNnT { \l__dorayaki_max_x_fp } < { \l__dorayaki_x_fp } {%
+    \fp_set:NV \l__dorayaki_max_x_fp \l__dorayaki_x_fp
+  }
+  \fp_compare:nNnT { \l__dorayaki_min_x_fp } > { \l__dorayaki_x_fp } {%
+    \fp_set:NV \l__dorayaki_min_x_fp \l__dorayaki_x_fp
+  }
+  \fp_compare:nNnT { \l__dorayaki_max_y_fp } < { \l__dorayaki_y_fp } {%
+    \fp_set:NV \l__dorayaki_max_y_fp \l__dorayaki_y_fp
+  }
+  \fp_compare:nNnT { \l__dorayaki_min_y_fp } > { \l__dorayaki_y_fp } {%
+    \fp_set:NV \l__dorayaki_min_y_fp \l__dorayaki_y_fp
+  }
+}
+
+% Lillの方法に従って係数をもとに次の点を決定する
+% #1: 係数（高次の係数から順に与える必要がある）
+\cs_new:Nn \__dorayaki_lill_move:n {%
+  % 回る
+  \int_set:NV \l_tmpa_int \l__dorayaki_dx_int
+  \int_set:Nn \l__dorayaki_dx_int { \fp_to_int:n{ \fp_eval:n{ -1 * \l__dorayaki_dy_int * \fp_sign:n{ #1 } } } }
+  \int_set:Nn \l__dorayaki_dy_int { \fp_to_int:n{ \fp_eval:n{ \l_tmpa_int * \fp_sign:n{ #1 } } } }
+
+  % 動く
+  \fp_add:Nn \l__dorayaki_x_fp { \fp_eval:n{ \l__dorayaki_dx_int * abs(#1) } }
+  \fp_add:Nn \l__dorayaki_y_fp { \fp_eval:n{ \l__dorayaki_dy_int * abs(#1) } }
+
+  \__dorayaki_lill_update_minmax:
+}
+
+% TikZで点を描画する
+% #1: 点
+\cs_new:Nn \__dorayaki_lill_put_point:n {%
+  \fill[black] #1 circle[radius=1pt];
+}
+
+\cs_new:Nn \__dorayaki_lill_log_coordinate:n {%
+  \PackageInfo{ dorayaki-lill }{ #1:~(\fp_use:N\l__dorayaki_x_fp,~\fp_use:N\l__dorayaki_y_fp) }
+}
+
+% 与えられた係数をもとにLillの方法における点や線・座標軸を描画し点の座標を設定
+% #1: 3次の係数
+% #2: 2次の係数
+% #3: 1次の係数
+% #4: 0次の係数
+\cs_new:Nn \__dorayaki_lill_setup:nnnn {%
+  \__dorayaki_lill_init:
+  % 点を生成
+  \__dorayaki_lill_move:n { #1 }
+  \coordinate (p1) at (\fp_use:N \l__dorayaki_x_fp, \fp_use:N \l__dorayaki_y_fp);
+  \__dorayaki_lill_log_coordinate:n{ p1 }
+  \fp_set:Nn \l__dorayaki_la_x_fp { \fp_eval:n{ \l__dorayaki_x_fp * 2 } }
+  \__dorayaki_lill_move:n { #2 }
+  \coordinate (p2) at (\fp_use:N \l__dorayaki_x_fp, \fp_use:N \l__dorayaki_y_fp);
+  \__dorayaki_lill_log_coordinate:n{ p2 }
+  \__dorayaki_lill_move:n { #3 }
+  \coordinate (p3) at (\fp_use:N \l__dorayaki_x_fp, \fp_use:N \l__dorayaki_y_fp);
+  \__dorayaki_lill_log_coordinate:n{ p3 }
+  \fp_set:NV \l_tmpa_fp \l__dorayaki_y_fp
+  \__dorayaki_lill_move:n { #4 }
+  \coordinate (p4) at (\fp_use:N \l__dorayaki_x_fp, \fp_use:N \l__dorayaki_y_fp);
+  \__dorayaki_lill_log_coordinate:n{ p4 }
+  \fp_set:NV \l_tmpb_fp \l__dorayaki_y_fp
+  \fp_compare:nNnTF { \l_tmpa_fp } > { \l_tmpb_fp } {%
+    \fp_set:Nn { \l__dorayaki_lb_abovebelow_int }{ 1 }
+  }{%
+    \fp_set:Nn { \l__dorayaki_lb_abovebelow_int }{ -1 }
+  }
+  % 最後にまがった方向をもとにL2の位置を決定
+  \fp_set:Nn \l__dorayaki_lb_y_fp { \fp_eval:n{ \l_tmpa_fp + \l__dorayaki_lb_abovebelow_int * abs(#4) } }
+
+  \__dorayaki_lill_put_point:n { (p1) }
+  \__dorayaki_lill_put_point:n { (p2) }
+  \__dorayaki_lill_put_point:n { (p3) }
+  \__dorayaki_lill_put_point:n { (p4) }
+  \__dorayaki_lill_put_point:n { (0, 0) }
+
+  \draw[line] (0, 0) -- (p1) -- (p2) -- (p3) -- (p4);
+  \draw (0, 0) node[below~left] {$O$};
+
+  % 描画範囲を決定
+  \fp_set:Nn \l__dorayaki_axis_min_x_fp { \fp_eval:n{ min(\l__dorayaki_min_x_fp, \l__dorayaki_la_x_fp) - 1 } }
+  \fp_set:Nn \l__dorayaki_axis_max_x_fp { \fp_eval:n{ max(\l__dorayaki_max_x_fp, \l__dorayaki_la_x_fp) + 1 } }
+  \fp_set:Nn \l__dorayaki_axis_min_y_fp { \fp_eval:n{ min(\l__dorayaki_min_y_fp, \l__dorayaki_lb_y_fp) - 1 } }
+  \fp_set:Nn \l__dorayaki_axis_max_y_fp { \fp_eval:n{ max(\l__dorayaki_max_y_fp, \l__dorayaki_lb_y_fp) + 1 } }
+  \draw[axis] (\fp_use:N \l__dorayaki_axis_min_x_fp, 0) -- (\fp_use:N \l__dorayaki_axis_max_x_fp, 0) node[below] {$x$};
+  \draw[axis] (0, \fp_use:N \l__dorayaki_axis_min_y_fp) -- (0, \fp_use:N \l__dorayaki_axis_max_y_fp) node[left] {$y$};
+
+  \coordinate (l1bot) at (\fp_use:N \l__dorayaki_la_x_fp, \fp_eval:n{ \l__dorayaki_axis_min_y_fp + 0.15 });
+  \coordinate (l1top) at (\fp_use:N \l__dorayaki_la_x_fp, \fp_eval:n{ \l__dorayaki_axis_max_y_fp - 0.15 });
+  \coordinate (l2left) at (\fp_eval:n{ \l__dorayaki_axis_min_x_fp + 0.15 }, \fp_use:N \l__dorayaki_lb_y_fp);
+  \coordinate (l2right) at (\fp_eval:n{ \l__dorayaki_axis_max_x_fp - 0.15 }, \fp_use:N \l__dorayaki_lb_y_fp);
+  \draw[line] (l1bot) -- (l1top);
+  \draw[line] (l2left) -- (l2right);
+}
+
+% 与えられた傾きと切片をもとに折れ線を描画
+% #1: 傾き
+% #2: 切片
+\cs_new:Nn \__dorayaki_lill_draw_fold_line:nn {%
+  \fp_set:NV \l__dorayaki_fold_x_left_fp \l__dorayaki_axis_min_x_fp
+  \fp_set:NV \l__dorayaki_fold_x_right_fp \l__dorayaki_axis_max_x_fp
+  
+  \fp_set:Nn \l_tmpa_fp { \fp_eval:n{ #1 * \l__dorayaki_fold_x_left_fp + #2 } }
+  \fp_set:Nn \l_tmpb_fp { \fp_eval:n{ #1 * \l__dorayaki_fold_x_right_fp + #2 } }
+  \fp_compare:nNnF { #1 } = { 0 } {%
+    % 左側の開始xを決定
+    \fp_compare:nNnT { \l_tmpa_fp } > { \l__dorayaki_axis_max_y_fp } {%
+      \fp_set:Nn \l__dorayaki_fold_x_left_fp { \fp_eval:n{ (\l__dorayaki_axis_max_y_fp - #2) / #1 } }
+    }
+    \fp_compare:nNnT { \l_tmpa_fp } < { \l__dorayaki_axis_min_y_fp } {%
+      \fp_set:Nn \l__dorayaki_fold_x_left_fp { \fp_eval:n{ (\l__dorayaki_axis_min_y_fp - #2) / #1 } }
+    }
+
+    % 右側の端xを決定
+    \fp_compare:nNnT { \l_tmpb_fp } > { \l__dorayaki_axis_max_y_fp } {%
+      \fp_set:Nn \l__dorayaki_fold_x_right_fp { \fp_eval:n{ (\l__dorayaki_axis_max_y_fp - #2) / #1 } }
+    }
+    \fp_compare:nNnT { \l_tmpb_fp } < { \l__dorayaki_axis_min_y_fp } {%
+      \fp_set:Nn \l__dorayaki_fold_x_right_fp { \fp_eval:n{ (\l__dorayaki_axis_min_y_fp - #2) / #1 } }
+    }
+  }
+
+  \fp_set:Nn \l_tmpa_fp { \fp_eval:n{ #1 * \l__dorayaki_fold_x_left_fp + #2 } }
+  \fp_set:Nn \l_tmpb_fp { \fp_eval:n{ #1 * \l__dorayaki_fold_x_right_fp + #2 } }
+  \coordinate (foldline1) at (\fp_use:N \l__dorayaki_fold_x_left_fp, \fp_use:N \l_tmpa_fp);
+  \coordinate (foldline2) at (\fp_use:N \l__dorayaki_fold_x_right_fp, \fp_use:N \l_tmpb_fp);
+  \draw[fold] (foldline1) -- (foldline2);
+}
+
+\cs_new:Nn \__dorayaki_lill_complete: {
+  \coordinate (OT) at ($(foldline1)!(0, 0)!(foldline2)$);
+  \coordinate (p4T) at ($(foldline1)!(p4)!(foldline2)$);
+  \draw[line] (0, 0) -- (OT) -- (p4T) -- (p4);
+  \draw[support] (p2) -- (OT);
+  \draw[support] (p3) -- (p4T);
+  \coordinate (Odash) at ($(0, 0)!2!(OT)$);
+  \coordinate (p4dash) at ($(p4)!2!(p4T)$);
+}
+
+\cs_new:Nn \__dorayaki_lill_put_reflection: {
+  \__dorayaki_lill_put_point:n{ (Odash) }
+  \__dorayaki_lill_put_point:n{ (p4dash) }
+}
+
+\NewDocumentCommand{\lillsetup}{mmmm}{\__dorayaki_lill_setup:nnnn{#1}{#2}{#3}{#4}}
+\NewDocumentCommand{\lilldrawfold}{mm}{\__dorayaki_lill_draw_fold_line:nn{#1}{#2}}
+\NewDocumentCommand{\lillcomplete}{}{\__dorayaki_lill_complete:}
+\NewDocumentCommand{\lillputpoint}{m}{\__dorayaki_lill_put_point:n{#1}}
+\NewDocumentCommand{\lilldraw}{smmmmmm}{%
+  \lillsetup{#2}{#3}{#4}{#5}
+  \lilldrawfold{#6}{#7}
+  \lillcomplete
+  \IfBooleanF{#1}{\__dorayaki_lill_put_reflection:}
+}
+
+\ExplSyntaxOff
+
