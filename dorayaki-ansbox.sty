@@ -22,5 +22,11 @@
   \__dorayaki_ansbox:n{\ref{dorayaki:ans:#1}}
 }
 
+\NewDocumentCommand{\printans}{}{
+  \seq_map_indexed_inline:Nn \g_dorayaki_ans_seq {
+    \noindent ##1.~##2 \par
+  }
+}
+
 \ExplSyntaxOff
 
