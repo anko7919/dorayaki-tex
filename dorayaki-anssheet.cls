@@ -13,7 +13,6 @@
 
 \AtEndDocument{%
   \switchcolumn[1]
-  \noindent\textsf{Answers}\par
   \printans
   \end{paracol}%
 }
