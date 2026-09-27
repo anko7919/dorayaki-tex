@@ -5,7 +5,7 @@
 
 \fp_new:N \l__dorayaki_linespread_fp
 
-\keys_define:nn { dorayaki }{%
+\keys_define:nn { dorayaki }{
   linespread .fp_set:N = \l__dorayaki_linespread_fp,
   linespread .initial:n = 1.0,
   linespread .code:n = { \ClassInfo{ dorayaki-ja }{ linespread: #1 } },
@@ -25,7 +25,7 @@
 
 \ProcessKeyOptions[ dorayaki ]
 
-\AtBeginDocument{%
+\AtBeginDocument{
   \linespread{ \fp_use:N \l__dorayaki_linespread_fp }
 }
 
@@ -39,5 +39,5 @@
 \RequirePackage{dorayaki-math}
 \RequirePackage[language=japanese]{dorayaki-thm}
 
-\RenewDocumentCommand{\emph}{ m }{\textbf{#1}}
+\RenewDocumentCommand{\emph}{ m }{\textsf{#1}}
 
