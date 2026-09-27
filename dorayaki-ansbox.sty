@@ -1,0 +1,26 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{dorayaki-ansbox}[2026/09/27]
+
+\newcounter{dorayakianswer}
+
+\ExplSyntaxOn
+
+\seq_new:N \g_dorayaki_ans_seq
+
+\cs_new:Nn \__dorayaki_ansbox:n {
+  \framebox[3em]{#1}
+}
+
+\NewDocumentCommand{\ans}{ o m }{
+  \refstepcounter{dorayakianswer}
+  \IfValueT{#1}{\label{dorayaki:ans:#1}}
+  \__dorayaki_ansbox:n{\thedorayakianswer}
+  \seq_put_right:Nn \g_dorayaki_ans_seq {#2}
+}
+
+\NewDocumentCommand{\refans}{ m }{
+  \__dorayaki_ansbox:n{\ref{dorayaki:ans:#1}}
+}
+
+\ExplSyntaxOff
+
