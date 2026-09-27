@@ -5,7 +5,7 @@
 
 \ExplSyntaxOn
 
-\seq_new:N \g_dorayaki_ans_seq
+\seq_new:N \g__dorayaki_ans_seq
 
 \cs_new:Nn \__dorayaki_ansbox:n {
   \framebox[3em]{#1}
@@ -15,7 +15,7 @@
   \refstepcounter{dorayakianswer}
   \IfValueT{#1}{\label{dorayaki:ans:#1}}
   \__dorayaki_ansbox:n{\thedorayakianswer}
-  \seq_put_right:Nn \g_dorayaki_ans_seq {#2}
+  \seq_gput_right:Nn \g__dorayaki_ans_seq {#2}
 }
 
 \NewDocumentCommand{\refans}{ m }{
@@ -23,7 +23,7 @@
 }
 
 \NewDocumentCommand{\printans}{}{
-  \seq_map_indexed_inline:Nn \g_dorayaki_ans_seq {
+  \seq_map_indexed_inline:Nn \g__dorayaki_ans_seq {
     \noindent ##1.~##2 \par
   }
 }
