@@ -7,45 +7,80 @@
 
 \ExplSyntaxOn
 
-\seq_new:N \g__dorayaki_ans_seq
-\prop_new:N \g__dorayaki_num_prop
-\int_new:N \g__dorayaki_counter_int
+\seq_new:N \g__dorayaki_ans_seq % 解答を保存する
+\seq_new:N \g__dorayaki_ans_nums_seq % 出力される問題番号を出力する
+\prop_new:N \g__dorayaki_num_prop % ラベルと番号の対応表
+\int_new:N \g__dorayaki_counter_int % ansカウンタ
+\int_new:N \g__dorayaki_labelnum_int % ラベル番号
+\int_zero_new:N \g__dorayaki_last_index_int % 最後の番号
 
+% #1: ボックス内にいれるトークン列
 \cs_new:Nn \__dorayaki_ansbox:n {
-  \framebox[3em]{#1}
+  \framebox[3em]{{\normalfont #1}}
 }
 
+% #1: 番号
+\cs_new:Nn \__dorayaki_get_index:n {
+  \int_set:Nn \l_tmpa_int { 1 } % ループカウンタ
+  \int_zero:N \l_tmpb_int % refのあるやつの個数カウンタ
+  \int_do_until:nNnn { \l_tmpa_int } > { #1 } {
+    \IfRefUndefinedBabel{ dorayaki:ans:\int_use:N\l_tmpa_int }{}{
+      \int_add:Nn \l_tmpb_int { 1 }
+    }
+    \int_add:Nn \l_tmpa_int { 1 }
+  }
+  \int_gset:NV \g__dorayaki_labelnum_int \l_tmpb_int
+}
+
+% #1: ラベル名
+% #2: 解答
 \NewDocumentCommand{\ans}{ o m }{
+  \int_gzero:N \g__dorayaki_labelnum_int
   \refstepcounter{dorayakianswer}
   \int_gadd:Nn \g__dorayaki_counter_int { 1 }
-  \label{dorayaki:ans:\int_use:N\g__dorayaki_counter_int}
-  \IfValueT{#1}{
-    \prop_gput:NnV \g__dorayaki_num_prop { #1 } \g__dorayaki_counter_int
+  \label{ dorayaki:ans:\int_use:N\g__dorayaki_counter_int }
+  \__dorayaki_get_index:n{ \int_use:N\g__dorayaki_counter_int }
+  \__dorayaki_ansbox:n{ \int_use:N\g__dorayaki_labelnum_int }
+  \int_compare:nNnF { \g__dorayaki_last_index_int } = { \g__dorayaki_labelnum_int } {
+    \seq_gput_right:Nn \g__dorayaki_ans_seq { #2 }
+    \int_gset:NV \g__dorayaki_last_index_int \g__dorayaki_labelnum_int
+    % 出力調整
+    \IfRefUndefinedBabel{dorayaki:ans:\int_use:N\g__dorayaki_counter_int}{
+      \PackageError{ dorayaki-ansbox }{ the~label~`dorayaki:ans:\int_use:N\g__dorayaki_counter_int`~is~undefined }
+    }{
+      \seq_gput_right:NV \g__dorayaki_ans_nums_seq \g__dorayaki_counter_int
+    }
+    % ラベル登録
+    \IfValueT{#1}{
+      \prop_gput:NnV \g__dorayaki_num_prop { #1 } \g__dorayaki_counter_int
+    }
   }
-  \prop_log:N \g__dorayaki_num_prop
-  \__dorayaki_ansbox:n{\thedorayakianswer}
-  \seq_gput_right:Nn \g__dorayaki_ans_seq { #2 }
 }
 
 \NewDocumentCommand{\refans}{ m }{
   \prop_get:NnN \g__dorayaki_num_prop { #1 } \l_tmpa_tl
-  \tl_log:N \l_tmpa_tl
-  \__dorayaki_ansbox:n{ \ref{ dorayaki:ans:\tl_use:N\l_tmpa_tl } }
+  \seq_map_indexed_inline:Nn \g__dorayaki_ans_nums_seq {
+    \tl_if_eq:NnT \l_tmpa_tl { ##2 } {
+      \__dorayaki_ansbox:n{ ##1 }
+    }
+  }
 }
 
 \NewDocumentCommand{\printans}{}{
   \seq_map_indexed_inline:Nn \g__dorayaki_ans_seq {
-    \tl_set:Nx \l_tmpa_tl { \getpagerefnumber{dorayaki:ans:##1} }
-    \int_compare:nNnTF { ##1 } = { 1 } {
-      \noindent\textsf{Answers}\par
-    } {
-      \tl_if_eq:NNF \g_tmpa_tl \l_tmpa_tl {
-        \newpage
+    \IfRefUndefinedBabel{dorayaki:ans:\seq_item:Nn \g__dorayaki_ans_nums_seq { ##1 } }{}{
+      \tl_set:Nx \l_tmpa_tl { \getpagerefnumber{dorayaki:ans:\seq_item:Nn \g__dorayaki_ans_nums_seq { ##1 } } }
+      \int_compare:nNnTF { ##1 } = { 1 } {
         \noindent\textsf{Answers}\par
+      } {
+        \tl_if_eq:NNF \g_tmpa_tl \l_tmpa_tl {
+          \newpage
+          \noindent\textsf{Answers}\par
+        }
       }
+      \noindent ##1.~##2 \par
+      \tl_gset:NV \g_tmpa_tl \l_tmpa_tl
     }
-    \noindent ##1.~##2 \par
-    \tl_gset:NV \g_tmpa_tl \l_tmpa_tl
   }
 }
 
